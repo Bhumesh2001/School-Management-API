@@ -6,9 +6,7 @@ const schoolRoutes = require('./routes/schoolRoutes');
 const app = express();
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.status(200).json({ message: '🎉 Welcome to the School API! 🎓' });
-});
+app.get('/', (req, res) => res.send(`<h1>🎉 Welcome to the School API! 🎓<h1/>`));
 app.use('/api', schoolRoutes);
 
 const PORT = process.env.PORT || 3000;
