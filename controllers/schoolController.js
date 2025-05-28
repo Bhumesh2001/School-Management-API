@@ -10,7 +10,7 @@ exports.addSchool = async (req, res) => {
     }
 
     try {
-        const conn = db();
+        const conn = await db();
 
         // Check if the school already exists
         const checkSQL = `
@@ -47,7 +47,7 @@ exports.listSchools = async (req, res) => {
     }
 
     try {
-        const conn = await db(); // ✅ await here
+        const conn = await db();
         const [results] = await conn.query('SELECT * FROM schools');
 
         const userLat = parseFloat(latitude);
