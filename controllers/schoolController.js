@@ -47,7 +47,7 @@ exports.listSchools = async (req, res) => {
     }
 
     try {
-        const conn = db(); // 🔁 call the function to get the connection
+        const conn = await db(); // ✅ await here
         const [results] = await conn.query('SELECT * FROM schools');
 
         const userLat = parseFloat(latitude);
