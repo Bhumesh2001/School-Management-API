@@ -64,29 +64,72 @@
 
 // module.exports = connection;
 
+// const mysql = require('mysql2/promise');
+// require('dotenv').config();
+
+// const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+
+// let connection;
+
+// async function initDB() {
+//     try {
+//         connection = await mysql.createConnection({
+//             host: DB_HOST,
+//             user: DB_USER,
+//             password: DB_PASSWORD,
+//             multipleStatements: true,
+//         });
+
+//         console.info('✅ Connected to MySQL (no DB selected)');
+
+//         await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``);
+//         console.info(`✅ Database '${DB_NAME}' is ready`);
+
+//         await connection.changeUser({ database: DB_NAME });
+//         console.info(`✅ Using database '${DB_NAME}'`);
+
+//         const createTableQuery = `
+//             CREATE TABLE IF NOT EXISTS schools (
+//                 id INT AUTO_INCREMENT PRIMARY KEY,
+//                 name VARCHAR(255) NOT NULL,
+//                 address VARCHAR(255) NOT NULL,
+//                 latitude FLOAT NOT NULL,
+//                 longitude FLOAT NOT NULL
+//             );
+//         `;
+//         await connection.query(createTableQuery);
+//         console.info("✅ 'schools' table is ready");
+//     } catch (err) {
+//         console.error('❌ DB Initialization Error:', err.message);
+//         process.exit(1);
+//     }
+// };
+
+// // Immediately initialize the DB connection
+// initDB();
+
+// module.exports = function getConnection() {
+//     return connection;
+// };
+
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
-let connection;
+let connectionPromise;
 
 async function initDB() {
-    try {
-        connection = await mysql.createConnection({
+    if (!connectionPromise) {
+        connectionPromise = mysql.createConnection({
             host: DB_HOST,
             user: DB_USER,
             password: DB_PASSWORD,
+            database: DB_NAME,
             multipleStatements: true,
         });
 
-        console.info('✅ Connected to MySQL (no DB selected)');
-
-        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\``);
-        console.info(`✅ Database '${DB_NAME}' is ready`);
-
-        await connection.changeUser({ database: DB_NAME });
-        console.info(`✅ Using database '${DB_NAME}'`);
+        const conn = await connectionPromise;
 
         const createTableQuery = `
             CREATE TABLE IF NOT EXISTS schools (
@@ -97,17 +140,11 @@ async function initDB() {
                 longitude FLOAT NOT NULL
             );
         `;
-        await connection.query(createTableQuery);
+        await conn.query(createTableQuery);
         console.info("✅ 'schools' table is ready");
-    } catch (err) {
-        console.error('❌ DB Initialization Error:', err.message);
-        process.exit(1);
     }
+
+    return connectionPromise;
 };
 
-// Immediately initialize the DB connection
-initDB();
-
-module.exports = function getConnection() {
-    return connection;
-};
+module.exports = initDB;

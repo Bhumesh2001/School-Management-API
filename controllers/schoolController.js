@@ -1,4 +1,4 @@
-const db = require('../config/db'); // Using the connection pool
+const getConnection = require('../config/db');
 const { calculateDistance } = require('../utils/util');
 
 // Add School
@@ -10,7 +10,7 @@ exports.addSchool = async (req, res) => {
     }
 
     try {
-        const conn = await db();
+        const conn = await getConnection();
 
         // Check if the school already exists
         const checkSQL = `
@@ -47,7 +47,7 @@ exports.listSchools = async (req, res) => {
     }
 
     try {
-        const conn = await db();
+        const conn = await getConnection();
         const [results] = await conn.query('SELECT * FROM schools');
 
         const userLat = parseFloat(latitude);
