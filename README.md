@@ -25,7 +25,7 @@ This is a Node.js project for managing school data. The API allows you to add ne
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/school-management-api.git
+git clone https://github.com/Bhumesh2001/School-Management-API
 cd school-management-api
 ```
 
